@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/loginstyle.css">
+    <link rel="stylesheet" href="/css/hotelcard.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+</head>
+<header class="p-3 text-bg-dark">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+
+
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
+            </form>
+
+
+            <div class="text-end">
+                <!--<a href="/login" class="btn btn-outline-light me-2">Login</a>-->
+                <!--<div th:each="el : ${user}" class="alert alert-info me-2">
+                  <p>Здравствуйте</p><p th:text="${el.firstname}"></p>
+                </div>-->
+                <!--<div class="alert alert-info me-2">
+                    <p th:text="${firstname}"></p>
+                </div>-->
+                <p>Admin</p>
+                <a href="/login" class="btn btn-danger">Log-out</a>
+                <a href="/signUp" class="btn btn-warning">Sign-up</a>
+                <!--<button type="button" class="btn btn-warning">Sign-up</button>-->
+            </div>
+        </div>
+    </div>
+</header>
+<body>
+<div class="container mt-5">
+    <h1>Все пользователи:</h1>
+    <div th:each="el : ${users}" class="alert alert-info mt-2">
+        <h3>ID пользователя:</h3>
+        <h3 th:text="${el.userProfileId}"></h3>
+        <h3>Имя пользователя:</h3>
+        <h3 th:text="${el.firstname}"></h3>
+        <h3>Логин пользователя:</h3>
+        <h3 th:text="${el.getUser().getLogin()}"></h3>
+        <h3>Пароль пользователя:</h3>
+        <h3 th:text="${el.getUser().getPassword()}"></h3>
+        <form th:action="'/checkUsers/' + ${el.userProfileId} + '/delete'" method="post">
+            <input type="hidden" id="id" th:value="${el.getUserProfileId()}">
+            <input type="submit" class="red-button" value="Удлаить пользователя">
+        </form>
+        <!--<a th:href="'/order/' + ${el.orderID} + '/delete'" class="button btn-danger">Отменить бронь</a>-->
+    </div>
+</div>
+</body>
+</html>
+

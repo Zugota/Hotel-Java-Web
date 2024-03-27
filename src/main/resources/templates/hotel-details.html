@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/hotelcard.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <style>
+        main {
+            margin-top: 300px
+        }
+    </style>
+    <title>Title</title>
+
+</head>
+<div th:fragment="header-authorized">
+    <header class="p-3 text-bg-dark">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                    <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+                </a>
+
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="/" class="nav-link px-2 text-secondary">Home</a></li>
+                    <li><a href="#" class="nav-link px-2 text-white">Features</a></li>
+                    <li><a href="/hotels" class="nav-link px-2 text-white">Pricing</a></li>
+                    <li><a href="/#" class="nav-link px-2 text-white">FAQs</a></li>
+                    <li><a href="/userProfiler" class="nav-link px-2 text-white">Profile</a></li>
+                </ul>
+
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                    <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." aria-label="Search">
+                </form>
+
+                <div class="text-end">
+
+                    <div class="alert alert-info me-2">
+
+                    </div>
+                    <a href="/signUp" class="btn btn-warning">Sign-up</a>
+
+                </div>
+            </div>
+        </div>
+    </header>
+</div>
+<body>
+<!--<header th:insert="~{blocks/header-authorized :: header-authorized}"></header>-->
+
+        <div th:each="el : ${hotel}">
+            <div class="containercard">
+                <div class="image-container">
+                    <img th:src="${el.pathToPic}" alt="Thailand">
+                </div>
+                <div class="content">
+
+                    <h3 th:text="${el.name}"></h3>
+                    <h3 th:text="${el.description}"></h3>
+                    <h3 th:text="${el.price}" id="price"></h3>
+
+                    <form th:action="'/hotel/' + ${el.hotelID} + '/order'" method="post">
+                        <input type="hidden" id="summHidden" name="summ" value="">
+                        `<input type="hidden" id="totalDays" name="totalDays" value="">`
+                        <label for="date1">Date 1:</label>
+                        <input type="date" id="date1" name="date1">
+
+                        <label for="date2">Date 2:</label>
+                        <input type="date" id="date2" name="date2">
+                        <p id="totalDaysText"></p>
+                        <button class="btn btn-warning" type="submit">Забронировать</button>
+                    </form>
+                    <p id="summ"></p>
+
+
+                </div>
+            </div>
+        </div>
+
+
+</body>
+</html>
+
+<script>
+    // Функция для рассчета разницы в днях
+    function calculateDateDifference() {
+        // Получаем значения дат из элементов input
+        var date1 = new Date(document.getElementById('date1').value);
+        var date2 = new Date(document.getElementById('date2').value);
+        let priceElement = document.getElementById("price");
+        let price = parseInt(priceElement.textContent);
+        // Рассчитываем разницу в миллисекундах
+        var timeDifference = Math.abs(date2 - date1);
+
+        // Рассчитываем разницу в днях и выводим результат
+        var daysDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+        price *= daysDifference;
+        price = formatNumberWithSpaces(price);
+        document.getElementById('totalDaysText').innerText = 'Difference in days: ' + daysDifference;
+        document.getElementById('totalDays').value = daysDifference;
+        document.getElementById('summ').innerText = 'Суммарная стоимость = ' + price + ' рублей';
+        document.getElementById('summHidden').value = price;
+
+        /*document.getElementById("date1").value = formattedDate;
+
+        document.getElementById("date2").value = formattedDatePlus1;
+*/
+    }
+
+    function formatNumberWithSpaces(number) {
+        // Преобразовываем число в строку и добавляем пробелы между тысячами
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    // Добавляем обработчики событий для элементов input
+    document.getElementById('date1').addEventListener('input', calculateDateDifference);
+    document.getElementById('date2').addEventListener('input', calculateDateDifference);
+
+    /*document.getElementById('date1buf').value = document.getElementById('date1').value;
+    document.getElementById('date2buf').value = document.getElementById('date1').value;*/
+
+</script>
+
+<script>
+    // Получаем текущую дату
+    let currentDate = new Date();
+
+    // Преобразуем дату в строку формата "ГГГГ-ММ-ДД"
+    let formattedDate = currentDate.toISOString().slice(0, 10);
+
+    currentDate.setDate(currentDate.getDate() + 1);
+
+    let formattedDatePlus1 = currentDate.toISOString().slice(0, 10);
+
+    // Устанавливаем значение в элемент input
+    document.getElementById("date1").value = formattedDate;
+
+    document.getElementById("date2").value = formattedDatePlus1;
+
+    calculateDateDifference();
+</script>
